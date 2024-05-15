@@ -1,0 +1,9 @@
+modules = ["dart-3.3:v1-20240315-3def760"]
+run = "flutter run"
+
+[nix]
+channel="stable-23_05"
+
+[deployment]
+run = ["sh", "-c", "flutter run"]
+deploymentTarget = "cloudrun"
