@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "625782292273",
+    "project_id": "workerschedulerv0",
+    "storage_bucket": "workerschedulerv0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625782292273:android:095d9bf32223f6d4903a10",
+        "android_client_info": {
+          "package_name": "com.example.work_scheduler_v0"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABgjsg-M3g5EK9FboO9JVqHDRZJQOjRqQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
