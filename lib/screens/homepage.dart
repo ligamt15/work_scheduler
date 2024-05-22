@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../payslip_calculations.dart';
 import 'base_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '/data/worker.dart';
@@ -12,7 +13,6 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final User? currentUser = FirebaseAuth.instance.currentUser;
     List<Worker> _workers = [];
-
     if (currentUser == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pushNamedAndRemoveUntil(
@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
         );
       });
     } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content:
@@ -38,7 +38,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Home Page'),
       ),
-      body: FutureBuilder<List<Worker>>(
+      body: FutureBuilder(
         future: fetchWorkerFromDatabase(),
         builder: (BuildContext context, AsyncSnapshot<List<Worker>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -82,17 +82,35 @@ class HomePage extends StatelessWidget {
                     },
                     child: const Text('Logout'),
                   ),
-                  Expanded(
+                  Container(
+                    height: 50,
                     child: ListView.builder(
                       itemCount: snapshot.data?.length,
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(
+                        return Column(children: [
+                          Text(
                               'Hello ${_workers[0].name} the ${_workers[0].position}!'),
-                        );
+                        ]);
                       },
                     ),
                   ),
+                  FutureBuilder<List<dynamic>>(
+                    future: getSalaries(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<dynamic>> snapshot) {
+                      print('FUTURE BUILDER START');
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator(); // or some other widget while waiting
+                      } else if (snapshot.hasError) {
+                        print('Error: ${snapshot.error}');
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        print('IN FUTURE');
+                        return Text(
+                            'Salary is: ${snapshot.data?[0]} \nProbably salary is: ${snapshot.data?[1]}');
+                      }
+                    },
+                  )
                 ],
               );
             }
@@ -134,4 +152,11 @@ Future<List<Worker>> fetchWorkerFromDatabase() async {
     }
     return [];
   }
+}
+
+Future<List<dynamic>>? getSalaries() async {
+  print('Getting salaries');
+  List<dynamic> salaries = await updateWorkDays();
+
+  return salaries;
 }

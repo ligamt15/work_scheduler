@@ -22,6 +22,9 @@ class AdminPageState extends State<AdminPage> {
       TextEditingController();
   final TextEditingController _workerPensionPersentageController =
       TextEditingController();
+  final TextEditingController _workerNextPaymentDate = TextEditingController();
+  final TextEditingController _workerPaymentIntervalDays =
+      TextEditingController();
   final User? currentUser = FirebaseAuth.instance.currentUser;
 
   Future<List<Worker>>? _workersFuture;
@@ -136,7 +139,15 @@ class AdminPageState extends State<AdminPage> {
                         controller: _workerHourRateController,
                         decoration: InputDecoration(
                           labelText:
-                              'Current hour rate: ${_workers[0].hourRate}',
+                              'Current hour rate: ${_workers[0].dayHourRate}',
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        controller: _workerHourRateController,
+                        decoration: InputDecoration(
+                          labelText:
+                              'Current hour rate: ${_workers[0].nightHourRate}',
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -145,6 +156,22 @@ class AdminPageState extends State<AdminPage> {
                         decoration: InputDecoration(
                           labelText:
                               'Current pension persentage: ${_workers[0].pensionPercentage}%',
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        controller: _workerNextPaymentDate,
+                        decoration: InputDecoration(
+                          labelText:
+                              'Next payment date: ${_workers[0].nextPaymentDate}',
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        controller: _workerPaymentIntervalDays,
+                        decoration: InputDecoration(
+                          labelText:
+                              'Current payment interval in days: ${_workers[0].paymentIntervalDays}',
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -163,10 +190,14 @@ class AdminPageState extends State<AdminPage> {
                                   _workerCurrencyController.text.isNotEmpty
                                       ? _workerCurrencyController.text
                                       : _workers[0].currency,
-                              hourRate: _workerHourRateController
+                              dayHourRate: _workerHourRateController
                                       .text.isNotEmpty
                                   ? double.parse(_workerHourRateController.text)
-                                  : _workers[0].hourRate,
+                                  : _workers[0].dayHourRate,
+                              nightHourRate: _workerHourRateController
+                                      .text.isNotEmpty
+                                  ? double.parse(_workerHourRateController.text)
+                                  : _workers[0].nightHourRate,
                               pensionPercentage:
                                   _workerPensionPersentageController
                                           .text.isNotEmpty
@@ -175,6 +206,14 @@ class AdminPageState extends State<AdminPage> {
                                               .text)
                                       : _workers[0].pensionPercentage,
                               workDate: _workers[0].workDate,
+                              nextPaymentDate:
+                                  _workerNextPaymentDate.text.isNotEmpty
+                                      ? _workerNextPaymentDate.text
+                                      : _workers[0].nextPaymentDate.toString(),
+                              paymentIntervalDays: _workerPaymentIntervalDays
+                                      .text.isNotEmpty
+                                  ? int.parse(_workerPaymentIntervalDays.text)
+                                  : _workers[0].paymentIntervalDays,
                             );
                             await FirebaseFirestore.instance
                                 .collection('workers')
@@ -190,6 +229,8 @@ class AdminPageState extends State<AdminPage> {
                             _workerCurrencyController.clear();
                             _workerHourRateController.clear();
                             _workerPensionPersentageController.clear();
+                            _workerNextPaymentDate.clear();
+                            _workerPaymentIntervalDays.clear();
                             _refreshWorkers();
                           } catch (e) {
                             print(e);
