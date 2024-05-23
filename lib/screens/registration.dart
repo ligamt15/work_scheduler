@@ -31,19 +31,24 @@ class RegistrationPageState extends State<RegistrationPage> {
         email: _emailController.text,
         password: _passwordController.text,
       );
-      await _db.collection('workers').doc(userCredential.user?.uid).set({
-        'name': _nameController.text,
-        'position': _positionController.text,
-        'countProbablyWorkDate': 0,
-        'countWorkDate': 0,
-        'currency': '£',
-        'dayHourRate': int.parse(_dayHourRate.text),
-        'nightHourRate': int.parse(_nightHourRate.text),
-        'nextPaymentDate': '',
-        'paymentIntervalDays': int.parse(_paymentIntervalDays.text),
-        'pensionPercentage': int.parse(_pensionPercentage.text),
-        'workDate': [{}],
-      });
+      print(' CREATE ${userCredential.user?.uid}');
+      try {
+        await _db.collection('workers').doc(userCredential.user?.uid).set({
+          'name': _nameController.text,
+          'position': _positionController.text,
+          'countProbablyWorkDate': 0,
+          'countWorkDate': 0,
+          'currency': '£',
+          'dayHourRate': double.parse(_dayHourRate.text),
+          'nightHourRate': double.parse(_nightHourRate.text),
+          'nextPaymentDate': '',
+          'paymentIntervalDays': double.parse(_paymentIntervalDays.text),
+          'pensionPercentage': double.parse(_pensionPercentage.text),
+          'workDate': [{}],
+        });
+      } catch (e) {
+        print('Failed to set data: $e');
+      }
       await Navigator.of(context).pushNamedAndRemoveUntil(
         homeRoute,
         (Route<dynamic> route) => false,
@@ -87,6 +92,7 @@ class RegistrationPageState extends State<RegistrationPage> {
                   labelText: 'Email',
                 ),
               ),
+              const SizedBox(height: 16.0),
               TextField(
                 controller: _nameController,
                 decoration: const InputDecoration(
