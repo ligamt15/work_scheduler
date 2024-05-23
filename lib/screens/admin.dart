@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'base_widget.dart';
 import '/data/worker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '/routes.dart';
 
 class AdminPage extends StatefulWidget {
   const AdminPage({super.key});
@@ -243,6 +244,18 @@ class AdminPageState extends State<AdminPage> {
                         },
                         child: const Text('Modify Worker'),
                       ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () async {
+                          await FirebaseAuth.instance.signOut();
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            loginPage,
+                            (Route<dynamic> route) => false,
+                          );
+                        },
+                        child: const Text('Logout'),
+                      ),
+                      const SizedBox(height: 20),
                     ],
                   );
                 }

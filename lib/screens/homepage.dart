@@ -72,16 +72,7 @@ class HomePage extends StatelessWidget {
               _workers = snapshot.data!;
               return Column(
                 children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      await FirebaseAuth.instance.signOut();
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                        loginPage,
-                        (Route<dynamic> route) => false,
-                      );
-                    },
-                    child: const Text('Logout'),
-                  ),
+                  const SizedBox(height: 150),
                   Container(
                     height: 50,
                     child: ListView.builder(
@@ -98,14 +89,13 @@ class HomePage extends StatelessWidget {
                     future: getSalaries(),
                     builder: (BuildContext context,
                         AsyncSnapshot<List<dynamic>> snapshot) {
-                      print('FUTURE BUILDER START');
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator(); // or some other widget while waiting
+                        return const CircularProgressIndicator();
                       } else if (snapshot.hasError) {
                         print('Error: ${snapshot.error}');
-                        return Text('Error: ${snapshot.error}');
+                        return const Text(
+                            'Cant calculate your salary. Check your calendar and next payment date');
                       } else {
-                        print('IN FUTURE');
                         return Text(
                             'Salary is: ${snapshot.data?[0]} \nProbably salary is: ${snapshot.data?[1]}');
                       }
@@ -137,7 +127,7 @@ Future<List<Worker>> fetchWorkerFromDatabase() async {
 
       return workers;
     } else {
-      print('Документ не найден');
+      print('Doc not found in database');
       return [];
     }
   } catch (error) {
@@ -152,7 +142,6 @@ Future<List<Worker>> fetchWorkerFromDatabase() async {
 }
 
 Future<List<dynamic>>? getSalaries() async {
-  print('Getting salaries');
   List<dynamic> salaries = await updateWorkDays();
 
   return salaries;

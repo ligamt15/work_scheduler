@@ -34,6 +34,8 @@ updateWorkDays() async {
   final getPayday = DateTime.parse(snapshot.data()?['nextPaymentDate']);
   final payday = getPayday.subtract(Duration(days: 4));
   final startDate = payday.subtract(Duration(days: 28));
+  double taxFreeAllowance = 12570;
+  double taxRate = 0.20;
 
   List<DateTime> generateDateRange(DateTime startDate, DateTime endDate) {
     List<DateTime> range = [];
@@ -64,12 +66,24 @@ updateWorkDays() async {
   final salary = (filteredWorkDates.length * 5 * nightHourRate) +
       (filteredWorkDates.length * 3 * dayHourRate);
 
-  final salaryAfterPension = (salary * pensionPersentage / 100);
+  // (день зарплата * на 4 недели * 12 месяцев) - 12570 = ззарплата с которой нужно снять таксы
+
+  var salaryAfterPension = salary - (salary * pensionPersentage / 100);
+  final annualSalary = salaryAfterPension * 12;
+
+  if (annualSalary > taxFreeAllowance) {
+    double excessIncome =
+        annualSalary - taxFreeAllowance; // вычисляем сумму, превышающую порог
+    double annualTax = excessIncome * taxRate;
+    salaryAfterPension = (annualSalary - annualTax) / 12;
+    print('$annualTax $annualSalary');
+  }
 
   final probablySalary = salary +
       (filteredProbablyWorkDates.length * 5 * nightHourRate) +
       (filteredProbablyWorkDates.length * 3 * dayHourRate);
-  final probablySalaryAfterPension = (probablySalary * pensionPersentage / 100);
+  final probablySalaryAfterPension =
+      probablySalary - (probablySalary * pensionPersentage / 100);
 
   return [salaryAfterPension, probablySalaryAfterPension];
 }

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
+import 'package:work_scheduler_v0/screens/base_widget.dart';
 
 int crossAxisCount = 0;
 double childAspectRatio = 0;
@@ -80,7 +81,7 @@ class CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BaseWidget(
       appBar: AppBar(
         title: const Text('Calendar'),
       ),

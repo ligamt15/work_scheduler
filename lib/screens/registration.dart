@@ -31,7 +31,6 @@ class RegistrationPageState extends State<RegistrationPage> {
         email: _emailController.text,
         password: _passwordController.text,
       );
-      print(' CREATE ${userCredential.user?.uid}');
       try {
         await _db.collection('workers').doc(userCredential.user?.uid).set({
           'name': _nameController.text,
@@ -41,10 +40,20 @@ class RegistrationPageState extends State<RegistrationPage> {
           'currency': '£',
           'dayHourRate': double.parse(_dayHourRate.text),
           'nightHourRate': double.parse(_nightHourRate.text),
-          'nextPaymentDate': '',
+          'nextPaymentDate': DateTime.now()
+              .add(const Duration(days: 1))
+              .toString()
+              .substring(0, 10),
           'paymentIntervalDays': double.parse(_paymentIntervalDays.text),
           'pensionPercentage': double.parse(_pensionPercentage.text),
-          'workDate': [{}],
+          'workDate': [
+            {
+              'Day': DateTime.now().day,
+              'Event': 'Working Day',
+              'Month': DateTime.now().month,
+              'Year': DateTime.now().year,
+            }
+          ],
         });
       } catch (e) {
         print('Failed to set data: $e');

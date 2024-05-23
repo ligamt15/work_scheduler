@@ -44,28 +44,32 @@ class LoginPage extends StatelessWidget {
         title: const Text('Login'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(labelText: 'E-mail'),
-            ),
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: 'Password'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => _signInWithEmailAndPassword(context),
-              child: const Text('Login'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, registrationPage),
-              child: const Text('Registration'),
-            ),
-          ],
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.5,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextField(
+                controller: emailController,
+                decoration: const InputDecoration(labelText: 'E-mail'),
+              ),
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(labelText: 'Password'),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => _signInWithEmailAndPassword(context),
+                child: const Text('Login'),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => Navigator.pushNamed(context, registrationPage),
+                child: const Text('Registration'),
+              ),
+            ],
+          ),
         ),
       ),
     );
