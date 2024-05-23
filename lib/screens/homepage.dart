@@ -131,13 +131,10 @@ Future<List<Worker>> fetchWorkerFromDatabase() async {
 
     final Map<String, dynamic>? data = snapshot.data();
     if (data != null) {
-      // Создаем экземпляр Worker из данных снимка
       final worker = Worker.fromMap(data);
 
-      // Добавляем созданный экземпляр Worker в список workers
       List<Worker> workers = [worker];
 
-      // Возвращаем список workers
       return workers;
     } else {
       print('Документ не найден');

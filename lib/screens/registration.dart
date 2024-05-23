@@ -16,6 +16,12 @@ class RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _positionController = TextEditingController();
+  final TextEditingController _dayHourRate = TextEditingController();
+
+  final TextEditingController _nightHourRate = TextEditingController();
+  final TextEditingController _paymentIntervalDays = TextEditingController();
+  final TextEditingController _pensionPercentage = TextEditingController();
+
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Future<void> _registerUser() async {
@@ -28,6 +34,15 @@ class RegistrationPageState extends State<RegistrationPage> {
       await _db.collection('workers').doc(userCredential.user?.uid).set({
         'name': _nameController.text,
         'position': _positionController.text,
+        'countProbablyWorkDate': 0,
+        'countWorkDate': 0,
+        'currency': '£',
+        'dayHourRate': int.parse(_dayHourRate.text),
+        'nightHourRate': int.parse(_nightHourRate.text),
+        'nextPaymentDate': '',
+        'paymentIntervalDays': int.parse(_paymentIntervalDays.text),
+        'pensionPercentage': int.parse(_pensionPercentage.text),
+        'workDate': [{}],
       });
       await Navigator.of(context).pushNamedAndRemoveUntil(
         homeRoute,
@@ -61,43 +76,74 @@ class RegistrationPageState extends State<RegistrationPage> {
       appBar: AppBar(
         title: const Text('Registration'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              TextField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                ),
               ),
-            ),
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Name',
+              TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                ),
               ),
-            ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: _positionController,
-              decoration: const InputDecoration(
-                labelText: 'Job Title',
+              const SizedBox(height: 16.0),
+              TextField(
+                controller: _passwordController,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                ),
+                obscureText: true,
               ),
-            ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
+              const SizedBox(height: 16.0),
+              TextField(
+                controller: _positionController,
+                decoration: const InputDecoration(
+                  labelText: 'Job Title',
+                ),
               ),
-              obscureText: true,
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _registerUser,
-              child: const Text('Register'),
-            ),
-          ],
+              const SizedBox(height: 16.0),
+              TextField(
+                controller: _dayHourRate,
+                decoration: const InputDecoration(
+                  labelText: 'Day Hour Rate',
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 16.0),
+              TextField(
+                controller: _nightHourRate,
+                decoration: const InputDecoration(
+                  labelText: 'Night Hour Rate',
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              TextField(
+                controller: _paymentIntervalDays,
+                decoration: const InputDecoration(
+                  labelText: 'Payment Interval in days',
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              TextField(
+                controller: _pensionPercentage,
+                decoration: const InputDecoration(
+                  labelText: 'Pension Percentage',
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _registerUser,
+                child: const Text('Register'),
+              ),
+            ],
+          ),
         ),
       ),
     );
