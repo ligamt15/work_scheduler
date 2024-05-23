@@ -80,7 +80,7 @@ class CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BasicWidget(
       appBar: AppBar(
         title: const Text('Calendar'),
       ),
