@@ -13,7 +13,7 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 const Color workDayColor = Color.fromARGB(195, 158, 214, 105);
 const Color probablyWorkingColor = Color.fromARGB(195, 239, 114, 158);
 const Color payDayColor = Color.fromARGB(255, 127, 125, 218);
-const Color currentDayColor = Color.fromARGB(255, 70, 62, 62);
+const Color currentDayColor = Color.fromARGB(255, 194, 99, 99);
 final User? currentUser = FirebaseAuth.instance.currentUser;
 
 int currentMonth = DateTime.now().month;
@@ -119,12 +119,6 @@ class CalendarPageState extends State<CalendarPage> {
               childAspectRatio = 2;
             }
 
-            DateTime nextPaymentDate =
-                DateTime.parse(snapshot.data!['nextPaymentDate']);
-            DateTime nextPaymentDateBefore = nextPaymentDate
-                .subtract(Duration(days: nextPaymentDate.day * 2));
-            DateTime nextPaymentDateAfter =
-                nextPaymentDate.add(Duration(days: nextPaymentDate.day * 2));
             List<Map<String, dynamic>> workDates =
                 List<Map<String, dynamic>>.from(snapshot.data!['workDate']);
 
@@ -158,8 +152,8 @@ class CalendarPageState extends State<CalendarPage> {
                   weekendStyle: TextStyle(color: Colors.blue[800]),
                   weekdayStyle: TextStyle(color: Colors.teal[800]),
                 ),
-                firstDay: nextPaymentDateBefore,
-                lastDay: nextPaymentDateAfter,
+                firstDay: DateTime.now().subtract(const Duration(days: 35)),
+                lastDay: DateTime.now().add(const Duration(days: 35)),
                 focusedDay: _focusedDay,
                 calendarFormat: CalendarFormat.month,
                 startingDayOfWeek: StartingDayOfWeek.monday,
@@ -403,48 +397,34 @@ class CalendarPageState extends State<CalendarPage> {
                   },
                   todayBuilder: (context, day, focusedDay) {
                     final dateKey = formatDate(day);
-                    if (eventMap[dateKey] != null) {
-                      return Container(
-                        alignment: Alignment.center,
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _markerColor(eventMap[dateKey]![0]),
+
+                    return Container(
+                      alignment: Alignment.center,
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: eventMap[dateKey]?[0] != null
+                            ? _markerColor(eventMap[dateKey]![0])
+                            : const Color.fromARGB(255, 224, 224, 224),
+                        border: const Border.symmetric(
+                          horizontal: BorderSide(
+                            color: currentDayColor,
+                            width: 8,
+                          ),
                         ),
-                        child: Text(
-                          '${day.day}',
+                      ),
+                      child: Text('${day.day}',
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 12.0,
-                          ),
-                        ),
-                      );
-                    } else {
-                      return Container(
-                        alignment: Alignment.center,
-                        width: 40,
-                        height: 40,
-                        decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Color.fromARGB(255, 224, 224, 224),
-                            border: Border.symmetric(
-                              horizontal: BorderSide(
-                                color: currentDayColor,
-                                width: 8,
-                              ),
-                            )),
-                        child: Text('${day.day}',
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                            )),
-                      );
-                    }
+                            fontWeight: FontWeight.bold,
+                          )),
+                    );
                   },
                 ),
               ),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
                 child: Wrap(
@@ -498,9 +478,7 @@ class CalendarPageState extends State<CalendarPage> {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                            width:
-                                5), // Add some space between the circle and the text
+                        const SizedBox(width: 5),
                         const Text('Pay Day'),
                       ],
                     ),
@@ -521,9 +499,7 @@ class CalendarPageState extends State<CalendarPage> {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                            width:
-                                5), // Add some space between the circle and the text
+                        const SizedBox(width: 5),
                         const Text('Current Day'),
                       ],
                     ),
@@ -531,6 +507,7 @@ class CalendarPageState extends State<CalendarPage> {
                   ],
                 ),
               ),
+              const SizedBox(height: 20),
               Center(
                 child: Text(
                   'Events for the month of ${DateFormat.MMMM().format(DateTime.now())}',
@@ -547,35 +524,32 @@ class CalendarPageState extends State<CalendarPage> {
                         const EdgeInsets.only(left: 30, right: 30, top: 25),
                     child: Column(
                       children: [
-                        GridView.count(
-                          crossAxisCount: crossAxisCount,
-                          childAspectRatio: childAspectRatio,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          children: [
-                            ...eventsOfMonth(sortedWorkDates, currentMonth)
-                                .map((event) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    textAlign: TextAlign.left,
-                                    '${event['Month']}-${event['Day']}-${event['Year']} ',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                        Wrap(
+                          children: eventsOfMonth(sortedWorkDates, currentMonth)
+                              .map((event) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  textAlign: TextAlign.left,
+                                  '${event['Month']}-${event['Day']}-${event['Year']} ',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  Text(
-                                    '${event['Event']}',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                    ),
+                                ),
+                                Text(
+                                  '${event['Event']}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
                                   ),
-                                ],
-                              );
-                            })
-                          ],
+                                ),
+                                const SizedBox(
+                                  width: 200,
+                                )
+                              ],
+                            );
+                          }).toList(),
                         ),
                       ],
                     ),
