@@ -45,14 +45,17 @@ class BaseWidgetState extends State<BaseWidget> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
+            backgroundColor: Colors.blue,
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.edit_calendar),
+            backgroundColor: Colors.blue,
             label: 'Calendar',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
+            backgroundColor: Colors.blue,
             label: 'Settings',
           ),
         ],

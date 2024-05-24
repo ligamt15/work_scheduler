@@ -329,6 +329,72 @@ class CalendarPageState extends State<CalendarPage> {
 
                     return Container();
                   },
+                  outsideBuilder: (context, day, focusedDay) {
+                    final dateKey = formatDate(day);
+
+                    if (formatDate(day) == snapshot.data!['nextPaymentDate']) {
+                      return Container(
+                        padding: const EdgeInsets.all(4.0),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: eventMap[dateKey]?[0] != null
+                                ? _markerColor(eventMap[dateKey]![0])
+                                : const Color.fromARGB(255, 224, 224, 224),
+                            border: const Border.symmetric(
+                              horizontal: BorderSide(
+                                color: payDayColor,
+                                width: 8,
+                              ),
+                            )),
+                        width: 40,
+                        height: 40,
+                        alignment: Alignment.center,
+                        child: Text(
+                          '${day.day}',
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      );
+                    }
+
+                    if (eventMap[dateKey] != null) {
+                      return Container(
+                        alignment: Alignment.center,
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _markerColor(eventMap[dateKey]![0]),
+                        ),
+                        child: Text(
+                          '${day.day}',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Container(
+                        alignment: Alignment.center,
+                        width: 40,
+                        height: 40,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color.fromARGB(255, 224, 224, 224),
+                        ),
+                        child: Text(
+                          '${day.day}',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      );
+                    }
+                  },
                   defaultBuilder: (context, day, focusedDay) {
                     final dateKey = formatDate(day);
 
