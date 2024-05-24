@@ -12,12 +12,7 @@ class BaseWidget extends StatefulWidget {
 }
 
 class BaseWidgetState extends State<BaseWidget> {
-  int _selectedIndex = 0;
-
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
     switch (index) {
       case 0:
         Navigator.of(context).pushNamedAndRemoveUntil(
@@ -46,6 +41,7 @@ class BaseWidgetState extends State<BaseWidget> {
       appBar: widget.appBar,
       body: widget.body,
       bottomNavigationBar: BottomNavigationBar(
+        onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -60,9 +56,6 @@ class BaseWidgetState extends State<BaseWidget> {
             label: 'Settings',
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        onTap: _onItemTapped,
       ),
     );
   }
