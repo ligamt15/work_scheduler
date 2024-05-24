@@ -9,5 +9,5 @@
   FLUTTER_VERSION = "3.19.6"
 
 [[plugins]]
-  package = "@netlify/plugin-install-flutter"
+  package = "netlify/plugin-install-flutter"
   inputs = { version = "3.19.6" } 
