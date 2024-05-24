@@ -66,24 +66,28 @@ updateWorkDays() async {
   final salary = (filteredWorkDates.length * 5 * nightHourRate) +
       (filteredWorkDates.length * 3 * dayHourRate);
 
-  // (день зарплата * на 4 недели * 12 месяцев) - 12570 = ззарплата с которой нужно снять таксы
-
   var salaryAfterPension = salary - (salary * pensionPersentage / 100);
   final annualSalary = salaryAfterPension * 12;
 
   if (annualSalary > taxFreeAllowance) {
-    double excessIncome =
-        annualSalary - taxFreeAllowance; // вычисляем сумму, превышающую порог
+    double excessIncome = annualSalary - taxFreeAllowance;
     double annualTax = excessIncome * taxRate;
     salaryAfterPension = (annualSalary - annualTax) / 12;
-    print('$annualTax $annualSalary');
   }
 
   final probablySalary = salary +
       (filteredProbablyWorkDates.length * 5 * nightHourRate) +
       (filteredProbablyWorkDates.length * 3 * dayHourRate);
-  final probablySalaryAfterPension =
+  var probablySalaryAfterPension =
       probablySalary - (probablySalary * pensionPersentage / 100);
+
+  final annualProbablySalary = probablySalaryAfterPension * 12;
+
+  if (annualProbablySalary > taxFreeAllowance) {
+    double excessIncome = annualProbablySalary - taxFreeAllowance;
+    double annualTax = excessIncome * taxRate;
+    probablySalaryAfterPension = (annualProbablySalary - annualTax) / 12;
+  }
 
   return [salaryAfterPension, probablySalaryAfterPension];
 }
