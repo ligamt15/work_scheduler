@@ -89,5 +89,5 @@ updateWorkDays() async {
     probablySalaryAfterPension = (annualProbablySalary - annualTax) / 12;
   }
 
-  return [salaryAfterPension, probablySalaryAfterPension];
+  return [salaryAfterPension,filteredWorkDates.length, probablySalaryAfterPension, filteredProbablyWorkDates.length, annualSalary ];
 }
