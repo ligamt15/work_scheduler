@@ -42,6 +42,7 @@ double taxAmount = 0;
   final startDate = payday.subtract(Duration(days: 28));
   double taxFreeAllowance = 12570;
   double taxRate = 0.20;
+double annualProbablySalaryAfterTax = 0;
 
   List<DateTime> generateDateRange(DateTime startDate, DateTime endDate) {
     List<DateTime> range = [];
@@ -96,8 +97,9 @@ taxStatus = ' after tax';
     probablySalaryAfterPension = probablySalaryAfterPension - ( annualTax / 12);
 taxStatus = ' after tax';
 taxAmount = probablySalaryAfterPension * taxRate;
+annualProbablySalaryAfterTax = (annualProbablySalary.ceil()-(taxAmount.ceil()*12));
   }
  
 
-  return [salaryAfterPension.ceil(),filteredWorkDates.length, probablySalaryAfterPension.ceil(),( filteredProbablyWorkDates.length+filteredWorkDates.length),taxAmount.ceil(), (annualProbablySalary.ceil()-(taxAmount.ceil()*12)), taxStatus ];
+  return [salaryAfterPension.ceil(),filteredWorkDates.length, probablySalaryAfterPension.ceil(),( filteredProbablyWorkDates.length+filteredWorkDates.length),taxAmount.ceil(), annualProbablySalaryAfterTax.ceil(), taxStatus ];
 }
