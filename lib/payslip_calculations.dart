@@ -89,7 +89,7 @@ taxStatus = ' after tax';
   var probablySalaryAfterPension =
       probablySalary - (probablySalary * pensionPersentage / 100);
 
-  final annualProbablySalaryAfterTax = probablySalaryAfterPension * 12;
+   annualProbablySalaryAfterTax = probablySalaryAfterPension * 12;
 
 
   if (annualProbablySalaryAfterTax > taxFreeAllowance) {
