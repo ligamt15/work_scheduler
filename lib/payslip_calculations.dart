@@ -76,7 +76,7 @@ updateWorkDays() async {
   }
 
   final probablySalary = salary +
-      (filteredProbablyWorkDates.length * 5 * nightHourRate) +
+      (filteredProbablyWorkDates.length * 4.5 * nightHourRate) +
       (filteredProbablyWorkDates.length * 3 * dayHourRate);
   var probablySalaryAfterPension =
       probablySalary - (probablySalary * pensionPersentage / 100);
