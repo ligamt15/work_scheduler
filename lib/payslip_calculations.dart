@@ -67,7 +67,7 @@ updateWorkDays() async {
     return dateRange.contains(item);
   }).toList();
 
-  final salary = (filteredWorkDates.length * 5 * nightHourRate) +
+  final salary = (filteredWorkDates.length * 4.5 * nightHourRate) +
       (filteredWorkDates.length * 3 * dayHourRate);
 
   var salaryAfterPension = salary - (salary * pensionPersentage / 100);
