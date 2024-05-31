@@ -5,14 +5,16 @@ import 'package:intl/intl.dart';
 import 'dart:math';
 
 final User? currentUser = FirebaseAuth.instance.currentUser;
-int workingDaysCount = 0;
-int probablyWorkingDaysCount = 0;
-var taxStatus = ' without tax';
-double taxAmount = 0;
+
  
 updateWorkDays() async {
   // Initialize Firebase
   await Firebase.initializeApp();
+
+int workingDaysCount = 0;
+int probablyWorkingDaysCount = 0;
+var taxStatus = ' without tax';
+double taxAmount = 0;
 
   // Get a reference to the Firestore database
   FirebaseFirestore db = FirebaseFirestore.instance;
@@ -92,6 +94,7 @@ taxStatus = ' after tax';
     double excessIncome = annualProbablySalary - taxFreeAllowance;
     double annualTax = excessIncome * taxRate;
     probablySalaryAfterPension = (annualProbablySalary - annualTax) / 12;
+taxStatus = ' after tax';
 taxAmount = probablySalaryAfterPension * taxRate;
   }
  
