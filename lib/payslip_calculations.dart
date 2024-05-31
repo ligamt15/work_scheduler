@@ -7,6 +7,9 @@ import 'dart:math';
 final User? currentUser = FirebaseAuth.instance.currentUser;
 int workingDaysCount = 0;
 int probablyWorkingDaysCount = 0;
+var taxStatus = ' without tax';
+int taxAmount = 0;
+ 
 updateWorkDays() async {
   // Initialize Firebase
   await Firebase.initializeApp();
@@ -74,6 +77,8 @@ updateWorkDays() async {
     double excessIncome = annualSalary - taxFreeAllowance;
     double annualTax = excessIncome * taxRate;
     salaryAfterPension = (annualSalary - annualTax) / 12;
+taxStatus = ' after tax';
+taxAmount = annualTax / 12;
   }
 
   final probablySalary = salary +
@@ -90,5 +95,5 @@ updateWorkDays() async {
     probablySalaryAfterPension = (annualProbablySalary - annualTax) / 12;
   }
 
-  return [salaryAfterPension.ceil(),filteredWorkDates.length, probablySalaryAfterPension.ceil(),( filteredProbablyWorkDates.length+filteredWorkDates.length), annualSalary.ceil() ];
+  return [salaryAfterPension.ceil(),filteredWorkDates.length, probablySalaryAfterPension.ceil(),( filteredProbablyWorkDates.length+filteredWorkDates.length),taxAmount, annualSalary.ceil(), taxStatus ];
 }
