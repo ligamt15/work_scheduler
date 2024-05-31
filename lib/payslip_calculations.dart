@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'dart:math';
 
 final User? currentUser = FirebaseAuth.instance.currentUser;
 int workingDaysCount = 0;
@@ -89,5 +90,5 @@ updateWorkDays() async {
     probablySalaryAfterPension = (annualProbablySalary - annualTax) / 12;
   }
 
-  return [salaryAfterPension,filteredWorkDates.length, probablySalaryAfterPension, filteredProbablyWorkDates.length, annualSalary ];
+  return [salaryAfterPension.ceil(),filteredWorkDates.length, probablySalaryAfterPension.ceil(),( filteredProbablyWorkDates.length+filteredWorkDates.length), annualSalary.ceil() ];
 }
