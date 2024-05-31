@@ -97,7 +97,7 @@ class HomePage extends StatelessWidget {
                             'Cant calculate your salary. Check your calendar and next payment date');
                       } else {
                         return Text(
-                            'Salary is: ${snapshot.data?[0]}, Count of working days: ${snapshot.data?[1]}\nProbably salary is: ${snapshot.data?[2]}, Count of all days: ${snapshot.data?[3]} \nAnnual salary is: ${snapshot.data?[4]}');
+                            'Salary is: ${snapshot.data?[0]}, Count of working days: ${snapshot.data?[1]}${snapshot.data?[6]}\nProbably salary is: ${snapshot.data?[2]}${snapshot.data?[6]}, Count of all days: ${snapshot.data?[3]}\nTax amount: ${snapshot.data?[4]}\nAnnual salary is: ${snapshot.data?[5]}&{snapshot.data?[6]}');
                       }
                     },
                   )
@@ -131,7 +131,6 @@ Future<List<Worker>> fetchWorkerFromDatabase() async {
       return [];
     }
   } catch (error) {
-    // Обработка ошибок
     if (currentUser == null) {
       print('User is not logged in');
     } else {
