@@ -78,7 +78,7 @@ double taxAmount = 0;
   if (annualSalary > taxFreeAllowance) {
     double excessIncome = annualSalary - taxFreeAllowance;
     double annualTax = excessIncome * taxRate;
-    salaryAfterPension = (annualSalary - annualTax) / 12;
+    salaryAfterPension = salaryAfterPension - (annualTax /12);
 taxStatus = ' after tax';
   }
 
@@ -93,7 +93,7 @@ taxStatus = ' after tax';
   if (annualProbablySalary > taxFreeAllowance) {
     double excessIncome = annualProbablySalary - taxFreeAllowance;
     double annualTax = excessIncome * taxRate;
-    probablySalaryAfterPension = (annualProbablySalary - annualTax) / 12;
+    probablySalaryAfterPension = probablySalaryAfterPension - ( annualTax / 12);
 taxStatus = ' after tax';
 taxAmount = probablySalaryAfterPension * taxRate;
   }
