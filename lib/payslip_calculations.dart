@@ -89,10 +89,11 @@ taxStatus = ' after tax';
   var probablySalaryAfterPension =
       probablySalary - (probablySalary * pensionPersentage / 100);
 
-  final annualProbablySalary = probablySalaryAfterPension * 12;
+  final annualProbablySalaryAfterTax = probablySalaryAfterPension * 12;
 
-  if (annualProbablySalary > taxFreeAllowance) {
-    double excessIncome = annualProbablySalary - taxFreeAllowance;
+
+  if (annualProbablySalaryAfterTax > taxFreeAllowance) {
+    double excessIncome = annualProbablySalaryAfterTax - taxFreeAllowance;
     double annualTax = excessIncome * taxRate;
     probablySalaryAfterPension = probablySalaryAfterPension - ( annualTax / 12);
 taxStatus = ' after tax';
