@@ -98,7 +98,7 @@ taxStatus = ' after tax';
     probablySalaryAfterPension = probablySalaryAfterPension - ( annualTax / 12);
 taxStatus = ' after tax';
 taxAmount = probablySalaryAfterPension * taxRate;
-annualProbablySalaryAfterTax = (annualProbablySalary.round()-(taxAmount.round()*12));
+annualProbablySalaryAfterTax = (annualProbablySalaryAfterTax()-(taxAmount.round()*12));
   }
  
 
