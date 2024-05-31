@@ -97,9 +97,9 @@ taxStatus = ' after tax';
     probablySalaryAfterPension = probablySalaryAfterPension - ( annualTax / 12);
 taxStatus = ' after tax';
 taxAmount = probablySalaryAfterPension * taxRate;
-annualProbablySalaryAfterTax = (annualProbablySalary.ceil()-(taxAmount.ceil()*12));
+annualProbablySalaryAfterTax = (annualProbablySalary.round()-(taxAmount.round()*12));
   }
  
 
-  return [salaryAfterPension.ceil(),filteredWorkDates.length, probablySalaryAfterPension.ceil(),( filteredProbablyWorkDates.length+filteredWorkDates.length),taxAmount.ceil(), annualProbablySalaryAfterTax.ceil(), taxStatus ];
+  return [salaryAfterPension.round(),filteredWorkDates.length, probablySalaryAfterPension.round(),( filteredProbablyWorkDates.length+filteredWorkDates.length),taxAmount.round(), annualProbablySalaryAfterTax.round(), taxStatus ];
 }
