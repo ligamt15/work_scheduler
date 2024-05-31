@@ -92,8 +92,9 @@ taxStatus = ' after tax';
     double excessIncome = annualProbablySalary - taxFreeAllowance;
     double annualTax = excessIncome * taxRate;
     probablySalaryAfterPension = (annualProbablySalary - annualTax) / 12;
+taxAmount = probablySalaryAfterPension * taxRate;
   }
- taxAmount = probablySalaryAfterPension * taxRate;
+ 
 
   return [salaryAfterPension.ceil(),filteredWorkDates.length, probablySalaryAfterPension.ceil(),( filteredProbablyWorkDates.length+filteredWorkDates.length),taxAmount.ceil(), annualSalary.ceil(), taxStatus ];
 }
