@@ -99,5 +99,5 @@ taxAmount = probablySalaryAfterPension * taxRate;
   }
  
 
-  return [salaryAfterPension.ceil(),filteredWorkDates.length, probablySalaryAfterPension.ceil(),( filteredProbablyWorkDates.length+filteredWorkDates.length),taxAmount.ceil(), (annualProbablySalary.ceil()-(tax amount*12)), taxStatus ];
+  return [salaryAfterPension.ceil(),filteredWorkDates.length, probablySalaryAfterPension.ceil(),( filteredProbablyWorkDates.length+filteredWorkDates.length),taxAmount.ceil(), (annualProbablySalary.ceil()-(taxAmount.ceil()*12)), taxStatus ];
 }
