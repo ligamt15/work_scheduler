@@ -78,7 +78,6 @@ updateWorkDays() async {
     double annualTax = excessIncome * taxRate;
     salaryAfterPension = (annualSalary - annualTax) / 12;
 taxStatus = ' after tax';
-taxAmount = annualTax / 12;
   }
 
   final probablySalary = salary +
@@ -94,6 +93,7 @@ taxAmount = annualTax / 12;
     double annualTax = excessIncome * taxRate;
     probablySalaryAfterPension = (annualProbablySalary - annualTax) / 12;
   }
+ taxAmount = probablySalaryAfterPension * taxRate;
 
   return [salaryAfterPension.ceil(),filteredWorkDates.length, probablySalaryAfterPension.ceil(),( filteredProbablyWorkDates.length+filteredWorkDates.length),taxAmount.ceil(), annualSalary.ceil(), taxStatus ];
 }
