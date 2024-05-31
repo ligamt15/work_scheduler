@@ -8,7 +8,7 @@ final User? currentUser = FirebaseAuth.instance.currentUser;
 int workingDaysCount = 0;
 int probablyWorkingDaysCount = 0;
 var taxStatus = ' without tax';
-int taxAmount = 0;
+double taxAmount = 0;
  
 updateWorkDays() async {
   // Initialize Firebase
@@ -95,5 +95,5 @@ taxAmount = annualTax / 12;
     probablySalaryAfterPension = (annualProbablySalary - annualTax) / 12;
   }
 
-  return [salaryAfterPension.ceil(),filteredWorkDates.length, probablySalaryAfterPension.ceil(),( filteredProbablyWorkDates.length+filteredWorkDates.length),taxAmount, annualSalary.ceil(), taxStatus ];
+  return [salaryAfterPension.ceil(),filteredWorkDates.length, probablySalaryAfterPension.ceil(),( filteredProbablyWorkDates.length+filteredWorkDates.length),taxAmount.ceil(), annualSalary.ceil(), taxStatus ];
 }
