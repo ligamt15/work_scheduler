@@ -12,8 +12,8 @@ Future<List<dynamic>> updateWorkDays() async {
   int workingDaysCount = 0;
   int probablyWorkingDaysCount = 0;
   var taxStatus = ' without tax';
-  double taxAmount = 0;
-  double annualProbablySalaryAfterTax = 0;
+  double monthlyTaxAmount = 0;
+  double monthlyProbablySalaryAfterTax = 0;
 
   // Get a reference to the Firestore database
   FirebaseFirestore db = FirebaseFirestore.instance;
@@ -61,44 +61,48 @@ Future<List<dynamic>> updateWorkDays() async {
     return dateRange.contains(item);
   }).toList();
 
+  // Calculate monthly salary and probable salary
   final salary = (filteredWorkDates.length * 4.5 * nightHourRate) +
       (filteredWorkDates.length * 3 * dayHourRate);
-
   var salaryAfterPension = salary - (salary * pensionPercentage / 100);
-  final annualSalary = salaryAfterPension * 12;
 
+  final probablySalary = (filteredProbablyWorkDates.length * 4.5 * nightHourRate) +
+      (filteredProbablyWorkDates.length * 3 * dayHourRate);
+  var probablySalaryAfterPension = probablySalary - (probablySalary * pensionPercentage / 100);
+
+  // Annual salary calculations for tax purposes
+  final annualSalary = salaryAfterPension * 13; // 13 periods of 4 weeks
+  final annualProbablySalary = probablySalaryAfterPension * 13; // 13 periods of 4 weeks
+
+  // Monthly (4-week) tax calculations
   if (annualSalary > taxFreeAllowance) {
     double excessIncome = annualSalary - taxFreeAllowance;
     double annualTax = excessIncome * taxRate;
-    salaryAfterPension = salaryAfterPension - (annualTax / 12);
+    monthlyTaxAmount = annualTax / 13;
+    salaryAfterPension -= monthlyTaxAmount;
     taxStatus = ' after tax';
   }
-
-  final probablySalary = salary +
-      (filteredProbablyWorkDates.length * 4.5 * nightHourRate) +
-      (filteredProbablyWorkDates.length * 3 * dayHourRate);
-  var probablySalaryAfterPension = probablySalary - (probablySalary * pensionPercentage / 100);
-  final annualProbablySalary = probablySalaryAfterPension * 12;
 
   if (annualProbablySalary > taxFreeAllowance) {
     double excessIncome = annualProbablySalary - taxFreeAllowance;
     double annualTax = excessIncome * taxRate;
-    taxAmount = annualTax / 12;  // Monthly tax amount
-    probablySalaryAfterPension = probablySalaryAfterPension - taxAmount;
-    annualProbablySalaryAfterTax = annualProbablySalary - annualTax;
+    double monthlyProbablyTaxAmount = annualTax / 13;
+    probablySalaryAfterPension -= monthlyProbablyTaxAmount;
+    monthlyTaxAmount = monthlyProbablyTaxAmount;
+    monthlyProbablySalaryAfterTax = annualProbablySalary / 13 - monthlyProbablyTaxAmount;
     taxStatus = ' after tax';
   } else {
-    taxAmount = 0; // No tax if within the allowance
-    annualProbablySalaryAfterTax = annualProbablySalary;
+    monthlyTaxAmount = 0; // No tax if within the allowance
+    monthlyProbablySalaryAfterTax = annualProbablySalary / 13;
   }
 
   return [
-    salaryAfterPension.round(),
-    filteredWorkDates.length,
-    probablySalaryAfterPension.round(),
-    (filteredProbablyWorkDates.length + filteredWorkDates.length),
-    taxAmount.round(),
-    annualProbablySalaryAfterTax.round(),
-    taxStatus
+    salaryAfterPension.round(),  // Salary after pension and tax
+    filteredWorkDates.length,  // Number of working days
+    monthlyProbablySalaryAfterTax.round(),  // Probable salary after tax
+    (probablySalary / 13).round(),  // Probable salary without tax (monthly)
+    (filteredProbablyWorkDates.length + filteredWorkDates.length),  // Number of probable and working days
+    monthlyTaxAmount.round(),  // Monthly tax amount
+    taxStatus  // Tax status
   ];
 }
