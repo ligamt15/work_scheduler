@@ -95,6 +95,7 @@ double probablySalaryBeforeTax = 0;
     taxStatus = ' after tax';
   } else {
     monthlyTaxAmount = 0; // No tax if within the allowance
+probablySalaryAfterTax = probablySalaryAfterPension;
   }
 
   return [
