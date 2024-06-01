@@ -13,7 +13,8 @@ Future<List<dynamic>> updateWorkDays() async {
   int probablyWorkingDaysCount = 0;
   var taxStatus = ' without tax';
   double monthlyTaxAmount = 0;
-  double monthlyProbablySalaryAfterTax = 0;
+  double probablySalaryAfterTax = 0;
+double probablySalaryBeforeTax = 0;
 
   // Get a reference to the Firestore database
   FirebaseFirestore db = FirebaseFirestore.instance;
@@ -84,25 +85,23 @@ Future<List<dynamic>> updateWorkDays() async {
   }
 
   if (annualProbablySalary > taxFreeAllowance) {
-    double excessIncome = annualProbablySalary - taxFreeAllowance;
+    double excessIncome = probablySalaryAfterPension - taxFreeAllowance;
     double annualTax = excessIncome * taxRate;
     double monthlyProbablyTaxAmount = annualTax / 13;
-    probablySalaryAfterPension -= monthlyProbablyTaxAmount;
+    probablySalaryAfterTax = probablySalaryAfterPension - monthlyProbablyTaxAmount;
     monthlyTaxAmount = monthlyProbablyTaxAmount;
-    monthlyProbablySalaryAfterTax = annualProbablySalary / 13 - monthlyProbablyTaxAmount;
     taxStatus = ' after tax';
   } else {
     monthlyTaxAmount = 0; // No tax if within the allowance
-    monthlyProbablySalaryAfterTax = annualProbablySalary / 13;
   }
 
   return [
-    salaryAfterPension.round(),  // Salary after pension and tax
-    filteredWorkDates.length,  // Number of working days
-    monthlyProbablySalaryAfterTax.round(),  // Probable salary after tax
-    (probablySalary / 13).round(),  // Probable salary without tax (monthly)
-    (filteredProbablyWorkDates.length + filteredWorkDates.length),  // Number of probable and working days
-    monthlyTaxAmount.round(),  // Monthly tax amount
-    taxStatus  // Tax status
-  ];
+  salaryAfterPension.round(),  // Зарплата после пенсионных отчислений и налогов
+  filteredWorkDates.length,  // Количество рабочих дней
+  probablySalaryAfterTax.round(),  // Примерная зарплата после налогов
+  probablySalaryBeforeTax(),  // Примерная зарплата без учета налогов (ежемесячно)
+  (filteredProbablyWorkDates.length + filteredWorkDates.length),  // Общее количество дней (примерных и рабочих)
+  monthlyTaxAmount.round(),  // Ежемесячная сумма налога
+  taxStatus  // Статус налога
+];
 }
