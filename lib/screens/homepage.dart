@@ -100,7 +100,7 @@ class HomePage extends StatelessWidget {
   'Salary is: ${snapshot.data?[0]},\n'
   'Count of working days: ${snapshot.data?[1]}, \n'
   'Probable salary is: ${snapshot.data?[2]}, '
-'Monthly salary without tax: ${snapshot.data?[2] - snapshot.data?[5]}'
+'Probably salary without tax: ${snapshot.data?[2] - snapshot.data?[5]} \n'
   'Probable salary without tax: ${snapshot.data?[3]}, \n'
   'Count of probably days: ${snapshot.data?[4]}, \n'
   'Tax amount: ${snapshot.data?[5]}, \n'
