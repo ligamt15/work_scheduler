@@ -70,9 +70,11 @@ double probablySalaryBeforeTax = 0;
   final probablySalary = (filteredProbablyWorkDates.length * 4.5 * nightHourRate) +
       (filteredProbablyWorkDates.length * 3 * dayHourRate);
   var probablySalaryAfterPension = probablySalary - (probablySalary * pensionPercentage / 100);
+ probablySalaryBeforeTax =  probablySalaryAfterPension;
 
   // Annual salary calculations for tax purposes
   final annualSalary = salaryAfterPension * 13; // 13 periods of 4 weeks
+
   final annualProbablySalary = probablySalaryAfterPension * 13; // 13 periods of 4 weeks
 
   // Monthly (4-week) tax calculations
@@ -99,7 +101,7 @@ double probablySalaryBeforeTax = 0;
   salaryAfterPension.round(),  // Зарплата после пенсионных отчислений и налогов
   filteredWorkDates.length,  // Количество рабочих дней
   probablySalaryAfterTax.round(),  // Примерная зарплата после налогов
-  probablySalaryBeforeTax(),  // Примерная зарплата без учета налогов (ежемесячно)
+  probablySalaryBeforeTax.round(),  // Примерная зарплата без учета налогов (ежемесячно)
   (filteredProbablyWorkDates.length + filteredWorkDates.length),  // Общее количество дней (примерных и рабочих)
   monthlyTaxAmount.round(),  // Ежемесячная сумма налога
   taxStatus  // Статус налога
