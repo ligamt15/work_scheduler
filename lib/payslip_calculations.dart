@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart';
 
 final User? currentUser = FirebaseAuth.instance.currentUser;
 
@@ -9,12 +8,19 @@ Future<List<dynamic>> updateWorkDays() async {
   // Initialize Firebase
   await Firebase.initializeApp();
 
-  int workingDaysCount = 0;
-  int probablyWorkingDaysCount = 0;
   var taxStatus = ' without tax';
   double monthlyTaxAmount = 0;
   double probablySalaryAfterTax = 0;
-double probablySalaryBeforeTax = 0;
+  double probablySalaryBeforeTax = 0;
+  double taxFreeAllowance = 12570;
+  double taxRate = 0.20;
+  double monthlyNIC = 0;
+  double lowerLimitNI =
+      242; // 242 * 4.33 (approximate conversion from weekly to monthly)
+  double upperLimitNI =
+      967; // 967 * 4.33 (approximate conversion from weekly to monthly)
+  double lowerRateNI = 0.08;
+  double upperRateNI = 0.02;
 
   // Get a reference to the Firestore database
   FirebaseFirestore db = FirebaseFirestore.instance;
@@ -24,17 +30,20 @@ double probablySalaryBeforeTax = 0;
 
   final dayHourRate = snapshot.data()?['dayHourRate'];
   final nightHourRate = snapshot.data()?['nightHourRate'];
+
   final workDate = snapshot.data()?['workDate'];
-  final workingDays = workDate.where((day) => day['Event'] == 'Working Day').toList();
-  final probablyWorkingDays = workDate.where((day) => day['Event'] == 'Could be a Working Day').toList();
+
+  final workingDays =
+      workDate.where((day) => day['Event'] == 'Working Day').toList();
+  final probablyWorkingDays = workDate
+      .where((day) => day['Event'] == 'Could be a Working Day')
+      .toList();
 
   final pensionPercentage = snapshot.data()?['pensionPercentage'];
 
   final getPayday = DateTime.parse(snapshot.data()?['nextPaymentDate']);
-  final payday = getPayday.subtract(Duration(days: 4));
-  final startDate = payday.subtract(Duration(days: 28));
-  double taxFreeAllowance = 12570;
-  double taxRate = 0.20;
+  final payday = getPayday.subtract(const Duration(days: 4));
+  final startDate = payday.subtract(const Duration(days: 28));
 
   List<DateTime> generateDateRange(DateTime startDate, DateTime endDate) {
     List<DateTime> range = [];
@@ -67,44 +76,53 @@ double probablySalaryBeforeTax = 0;
       (filteredWorkDates.length * 3 * dayHourRate);
   var salaryAfterPension = salary - (salary * pensionPercentage / 100);
 
-  final probablySalary = (filteredProbablyWorkDates.length * 4.5 * nightHourRate) +
-      (filteredProbablyWorkDates.length * 3 * dayHourRate);
-  var probablySalaryAfterPension = probablySalary - (probablySalary * pensionPercentage / 100);
- probablySalaryBeforeTax =  probablySalaryAfterPension;
+  final probablySalary =
+      (filteredProbablyWorkDates.length * 4.5 * nightHourRate) +
+          (filteredProbablyWorkDates.length * 3 * dayHourRate);
+
+  var probablySalaryAfterPension =
+      probablySalary - (probablySalary * pensionPercentage / 100);
+  probablySalaryAfterPension += salaryAfterPension;
+
+  probablySalaryBeforeTax = probablySalaryAfterPension;
 
   // Annual salary calculations for tax purposes
-  final annualSalary = salaryAfterPension * 13; // 13 periods of 4 weeks
+  final annualProbablySalary = probablySalaryAfterPension * 13; // 13 periods
 
-  final annualProbablySalary = probablySalaryAfterPension * 13; // 13 periods of 4 weeks
-
-  // Monthly (4-week) tax calculations
-  if (annualSalary > taxFreeAllowance) {
-    double excessIncome = annualSalary - taxFreeAllowance;
-    double annualTax = excessIncome * taxRate;
-    monthlyTaxAmount = annualTax / 13;
-    salaryAfterPension -= monthlyTaxAmount;
-    taxStatus = ' after tax';
+  var earningsBtwLoAndUp = (probablySalaryAfterPension / 4) - lowerLimitNI;
+  if ((probablySalaryAfterPension / 4) > upperLimitNI) {
+    var earningsAboveUp = upperLimitNI - (probablySalaryAfterPension / 4);
+    monthlyNIC =
+        earningsBtwLoAndUp * lowerRateNI + earningsAboveUp * upperRateNI;
+    print(
+        '($earningsBtwLoAndUp * $lowerRateNI) + ($earningsAboveUp * $upperRateNI) = $monthlyNIC');
+  } else {
+    monthlyNIC = earningsBtwLoAndUp * lowerRateNI * 4;
+    print('($earningsBtwLoAndUp * $lowerRateNI)  = $monthlyNIC');
   }
 
+  // Monthly (4-week) tax calculations
   if (annualProbablySalary > taxFreeAllowance) {
-    double excessIncome = probablySalaryAfterPension - taxFreeAllowance;
+    double excessIncome = annualProbablySalary - taxFreeAllowance;
     double annualTax = excessIncome * taxRate;
     double monthlyProbablyTaxAmount = annualTax / 13;
-    probablySalaryAfterTax = probablySalaryAfterPension - monthlyProbablyTaxAmount;
+    probablySalaryAfterTax =
+        probablySalaryAfterPension - monthlyProbablyTaxAmount;
     monthlyTaxAmount = monthlyProbablyTaxAmount;
     taxStatus = ' after tax';
   } else {
     monthlyTaxAmount = 0; // No tax if within the allowance
-probablySalaryAfterTax = probablySalaryAfterPension;
+    probablySalaryAfterTax = probablySalaryAfterPension;
   }
 
   return [
-  salaryAfterPension.round(),  // Зарплата после пенсионных отчислений и налогов
-  filteredWorkDates.length,  // Количество рабочих дней
-  probablySalaryAfterTax.round(),  // Примерная зарплата после налогов
-  probablySalaryBeforeTax.round(),  // Примерная зарплата без учета налогов (ежемесячно)
-  (filteredProbablyWorkDates.length + filteredWorkDates.length),  // Общее количество дней (примерных и рабочих)
-  monthlyTaxAmount.round(),  // Ежемесячная сумма налога
-  taxStatus  // Статус налога
-];
+    salaryAfterPension.round(),
+    filteredWorkDates.length,
+    probablySalaryAfterTax.round(),
+    probablySalaryBeforeTax.round(),
+    (filteredProbablyWorkDates.length + filteredWorkDates.length),
+    monthlyTaxAmount.round(),
+    monthlyNIC.round(),
+    taxStatus
+  ];
 }
