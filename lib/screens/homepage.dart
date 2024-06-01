@@ -97,7 +97,14 @@ class HomePage extends StatelessWidget {
                             'Cant calculate your salary. Check your calendar and next payment date');
                       } else {
                         return Text(
-                            'Salary is: ${snapshot.data?[0]}, Count of working days: ${snapshot.data?[1]}${snapshot.data?[6]}\nProbably salary is: ${snapshot.data?[2]}${snapshot.data?[6]}, Count of all days: ${snapshot.data?[3]}\nTax amount: ${snapshot.data?[4]}\nAnnual salary is: ${snapshot.data?[5]}${snapshot.data?[6]}');
+  'Salary is: ${snapshot.data?[0]}, '
+  'Count of working days: ${snapshot.data?[1]}, '
+  'Probable salary is: ${snapshot.data?[2]}, '
+  'Probable salary without tax: ${snapshot.data?[3]}, '
+  'Count of all days: ${snapshot.data?[4]}, '
+  'Tax amount: ${snapshot.data?[5]}, '
+  'Monthly salary without tax: ${snapshot.data?[2] - snapshot.data?[5]}'
+);
                       }
                     },
                   )
