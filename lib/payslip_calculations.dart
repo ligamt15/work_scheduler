@@ -94,12 +94,11 @@ Future<List<dynamic>> updateWorkDays() async {
     var earningsAboveUp = upperLimitNI - (probablySalaryAfterPension / 4);
     monthlyNIC =
         earningsBtwLoAndUp * lowerRateNI + earningsAboveUp * upperRateNI;
-    print(
-        '($earningsBtwLoAndUp * $lowerRateNI) + ($earningsAboveUp * $upperRateNI) = $monthlyNIC');
   } else {
     monthlyNIC = earningsBtwLoAndUp * lowerRateNI * 4;
-    print('($earningsBtwLoAndUp * $lowerRateNI)  = $monthlyNIC');
   }
+
+  probablySalaryAfterPension -= monthlyNIC;
 
   // Monthly (4-week) tax calculations
   if (annualProbablySalary > taxFreeAllowance) {
